@@ -37,6 +37,35 @@ Browser → S3 Bucket (Static Website Hosting) → index.html / error.html
          "Principal": "*",
          "Action": "s3:GetObject",
          "Resource": "arn:aws:s3:::ccrabtree-portfolio-site/*"
+
+5. Tested the site  
+   - Website endpoint:  
+     http://ccrabtree-portfolio-site.s3-website-us-east-2.amazonaws.com  
+   - Confirmed the index page loads and the error page appears on invalid paths  
+
+---
+
+## Screenshots
+**Index page**  
+![Index Page](screenshots/index-page.png)
+
+**Error page**  
+![Error Page](screenshots/error-page.png)
+
+---
+
+## Security Notes
+- Public access limited to `s3:GetObject` (read-only).  
+- Work done under IAM user (`chris-admin`), not the root account.  
+- Root account is protected with MFA.  
+
+---
+
+## Cost
+- S3 storage: Free Tier covers up to 5 GB  
+- Static hosting: Free  
+- Total monthly cost: $0 (under Free Tier or AWS credits)  
+
        }
      ]
    }
