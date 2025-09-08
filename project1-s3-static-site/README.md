@@ -37,10 +37,14 @@ Browser → S3 Bucket (Static Website Hosting) → index.html / error.html
          "Principal": "*",
          "Action": "s3:GetObject",
          "Resource": "arn:aws:s3:::ccrabtree-portfolio-site/*"
+      }
+     ]
+   }
+
 
 5. Tested the site  
    - Website endpoint:  
-     http://ccrabtree-portfolio-site.s3-website-us-east-2.amazonaws.com  
+     http://ccrabtree-portfolio-site.s3-website.us-east-2.amazonaws.com/ 
    - Confirmed the index page loads and the error page appears on invalid paths  
 
 ---
@@ -66,6 +70,4 @@ Browser → S3 Bucket (Static Website Hosting) → index.html / error.html
 - Static hosting: Free  
 - Total monthly cost: $0 (under Free Tier or AWS credits)  
 
-       }
-     ]
-   }
+ 
