@@ -8,7 +8,8 @@ This project demonstrates how I hosted a static website using Amazon S3. The sit
 ## Architecture
 Browser → S3 Bucket (Static Website Hosting) → index.html / error.html
 
-*(Insert an architecture diagram here when ready.)*
+![Architecture Diagram](screenshots/project1_s3_architecture.png)
+
 
 ---
 
