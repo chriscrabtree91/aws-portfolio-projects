@@ -1,125 +1,118 @@
-# JustCallChrisOK.com — Static Website Deployment (AWS + Porkbun + Zoho Mail)
+# Project – Hosting justcallchrisok.com with AWS S3 + Route 53 + CloudFront
 
-This project showcases the complete deployment of a live static website at [https://justcallchrisok.com](https://justcallchrisok.com), utilizing AWS infrastructure and a custom domain with business email integration.
+## Overview
 
----
-
-## 🛠️ Tech Stack
-
-| Service       | Purpose                         |
-|---------------|----------------------------------|
-| AWS S3        | Static website hosting           |
-| AWS CloudFront| CDN and SSL (HTTPS)              |
-| Porkbun       | Domain registrar + DNS settings  |
-| Zoho Mail     | Business email hosting           |
-| HTML/CSS      | Static content design            |
+This project demonstrates the complete deployment of a professional static website (**[https://justcallchrisok.com](https://justcallchrisok.com)**) using Amazon Web Services. It showcases domain management via **Porkbun**, email routing via **Zoho Mail**, and hosting through a combination of **S3**, **CloudFront**, and **Route 53**. The goal was to fully deploy a secure, performant, custom-branded website with HTTPS and professional email.
 
 ---
 
-## 🌐 Domain Setup via Porkbun
+## Architecture
 
-The domain `justcallchrisok.com` was registered through Porkbun, with DNS records configured to support AWS services and Zoho Mail.
-
-**Steps Completed:**
-- Registered domain through Porkbun.
-- Added DNS records for:
-  - AWS SSL certificate validation.
-  - CloudFront routing (ALIAS and CNAME).
-  - Zoho Mail (MX, SPF, DKIM, DMARC).
-
-> 🖼️ Screenshot: Porkbun DNS record configuration
+![Architecture Diagram](screenshots/architecture-diagram.png)
 
 ---
 
-## 📩 Zoho Mail Configuration
+## Steps I Took
 
-Custom domain email was configured using Zoho Mail.
+### 1. Purchased and Configured the Domain
 
-**Steps Completed:**
-- Domain verified in Zoho with TXT record.
-- MX records pointed to Zoho servers.
-- SPF, DKIM, and DMARC records added for authentication.
-- Final email address: `service@justcallchrisok.com`
+* Domain: `justcallchrisok.com` was purchased through **Porkbun**
+* Accessed DNS management via Porkbun dashboard
+* Updated nameservers to point to **AWS Route 53**
 
-> 🖼️ Screenshot: Zoho domain verification  
-> 🖼️ Screenshot: DNS records for email (MX, SPF, DKIM, DMARC)
+### 2. Set Up Professional Email (Zoho Mail)
 
----
+* Created Zoho Mail account
+* Set up domain: `justcallchrisok.com`
+* Verified domain ownership using TXT records in Porkbun
+* Added MX, SPF, DKIM, and CNAME records in Porkbun
 
-## ☁️ AWS S3 Static Hosting
+  * Email: `service@justcallchrisok.com`
+  * Ensured DNS propagation and tested email functionality
 
-An S3 bucket was created to host the static HTML/CSS website.
+### 3. Created and Configured S3 Bucket
 
-**Steps Completed:**
-- Bucket named `justcallchrisok.com` created in us-east-1.
-- Static website hosting enabled.
-- `index.html` uploaded and configured as root document.
-- Bucket policy updated for public access.
+* Bucket name: `justcallchrisok.com`
+* Unchecked **"Block all public access"**
+* Enabled **Static website hosting** with:
 
-> 🖼️ Screenshot: S3 static hosting configuration  
-> 🖼️ Screenshot: Bucket policy  
-> 🖼️ Screenshot: File upload view
+  * Index document: `index.html`
+  * Error document: `404.html`
+* Uploaded the static website files (HTML, CSS, assets)
 
----
+### 4. Set S3 Bucket Policy for Public Access
 
-## 🔒 SSL Certificate with ACM
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "PublicReadGetObject",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": "s3:GetObject",
+      "Resource": "arn:aws:s3:::justcallchrisok.com/*"
+    }
+  ]
+}
+```
 
-An SSL certificate was issued via AWS Certificate Manager.
+### 5. Configured Route 53 DNS Zone
 
-**Steps Completed:**
-- Requested certificate for `justcallchrisok.com` and `www.justcallchrisok.com`.
-- DNS validation performed through Porkbun CNAME record.
-- Certificate issued and ready for CloudFront.
+* Created **Hosted Zone** in Route 53 for `justcallchrisok.com`
+* Added A record using **Alias to CloudFront** distribution
+* Verified record propagation
 
-> 🖼️ Screenshot: ACM issued certificate  
-> 🖼️ Screenshot: DNS validation record
+### 6. Created CloudFront Distribution for HTTPS and Caching
 
----
+* Set S3 bucket as origin
+* Enabled redirect HTTP to HTTPS
+* Attached an **SSL certificate** via AWS Certificate Manager
+* Added custom domain `justcallchrisok.com` to alternate CNAMEs
+* Deployed distribution and copied the CloudFront domain
 
-## 🚀 CloudFront CDN + HTTPS
+### 7. Final DNS Setup in Route 53
 
-CloudFront was configured to serve the S3 website securely over HTTPS.
-
-**Steps Completed:**
-- CloudFront distribution created.
-- Origin domain: S3 static site URL.
-- Alternate domain names added (`www` and apex).
-- SSL certificate attached from ACM.
-- HTTP traffic redirected to HTTPS.
-
-> 🖼️ Screenshot: CloudFront settings and domain setup
-
----
-
-## 🌍 DNS Routing
-
-Porkbun DNS was updated to route traffic to CloudFront.
-
-**Steps Completed:**
-- ALIAS record set for `justcallchrisok.com` → CloudFront URL.
-- CNAME record set for `www.justcallchrisok.com` → CloudFront.
-
-> 🖼️ Screenshot: Final DNS records pointing to CloudFront
+* Created an **A record (alias)** for the domain pointing to the CloudFront distribution
+* Site became live and accessible via HTTPS:
+  [https://justcallchrisok.com](https://justcallchrisok.com)
 
 ---
 
-## ✅ Website Live
+## Screenshots
 
-The site is now accessible at [https://justcallchrisok.com](https://justcallchrisok.com) with HTTPS enabled and all email services functioning.
+**Porkbun DNS Management Panel**
+![DNS Settings](screenshots/porkbun-dns.png)
 
-> 🖼️ Screenshot: Browser showing live site  
-> 🖼️ Screenshot: Verified status in Zoho and AWS
+**Zoho DNS Setup for Email**
+![Zoho Email Setup](screenshots/zoho-dns.png)
+
+**S3 Bucket Properties & Static Hosting**
+![S3 Setup](screenshots/s3-hosting.png)
+
+**S3 Bucket Policy**
+![Bucket Policy](screenshots/bucket-policy.png)
+
+**Uploaded Website Files in S3**
+![S3 Contents](screenshots/s3-contents.png)
+
+**CloudFront Distribution Settings**
+![CloudFront](screenshots/cloudfront.png)
+
+**Route 53 Hosted Zone Records**
+![Route 53 Records](screenshots/route53.png)
+
+**Live Website Preview**
+![Site Screenshot](screenshots/live-preview.png)
 
 ---
 
-## 📸 Screenshot Reference Guide
+## Cost
 
-| Section                    | Screenshot Title                            |
-|----------------------------|---------------------------------------------|
-| Domain Setup               | Porkbun DNS configuration                   |
-| Zoho Mail                  | Zoho domain + MX/SPF/DKIM/DMARC records     |
-| S3 Static Hosting          | S3 bucket config + public access + files    |
-| SSL Certificate (ACM)      | ACM issued cert + validation CNAME          |
-| CloudFront Distribution    | CloudFront settings                         |
-| DNS to CloudFront          | Porkbun ALIAS and CNAME setup               |
-| Final Confirmation         | Live site + Zoho/AWS SES status             |
+* Domain via Porkbun: \~\$10/year
+* AWS S3 Storage: \~\$0 (Free Tier)
+* CloudFront (low usage): \$0 – \$1/month
+* Route 53 Hosted Zone: \$0.50/month
+* Zoho Mail: \~\$1/month (paid basic tier)
+
+**Total: Less than \$2/month to host a secure, branded business website with professional email.**
